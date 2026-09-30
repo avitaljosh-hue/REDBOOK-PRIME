@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigonometry Quiz</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --correct-bg: #dcfce7;
+            --correct-border: #16a34a;
+            --correct-text: #15803d;
+            --incorrect-bg: #fee2e2;
+            --incorrect-border: #dc2626;
+            --incorrect-text: #b91c1c;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #0f172a;
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 { margin: 0; font-size: 1.25rem; }
+        .stats { font-size: 0.9rem; opacity: 0.9; }
+
+        main {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 0 1rem 3rem;
+        }
+
+        .controls {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .question-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled { cursor: default; }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+            color: var(--correct-text);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect-border);
+            color: var(--incorrect-text);
+        }
+
+        .category-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: #e0f2fe;
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .score-banner {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .score-item { display: flex; flex-direction: column; }
+        .score-val { font-size: 1.5rem; font-weight: 700; }
+        .score-lbl { font-size: 0.8rem; opacity: 0.9; }
+
+        .btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn:hover { background: #1e293b; }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        .back,
+        .back:visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div>
+            <h1>Trigonometry Quiz</h1>
+        </div>
+        <div class="stats">
+            Total Questions: <span id="total-count">0</span>
+        </div>
+    </div>
+    <a class="back" href="index.html">← Back to Index</a>
+</header>
+
+<main>
+    <div class="score-banner">
+        <div class="score-item">
+            <span class="score-val" id="score-answered">0</span>
+            <span class="score-lbl">Answered</span>
+        </div>
+        <div class="score-item">
+            <span class="score-val" id="score-correct">0</span>
+            <span class="score-lbl">Correct</span>
+        </div>
+        <div class="score-item">
+            <span class="score-val" id="score-accuracy">0%</span>
+            <span class="score-lbl">Accuracy</span>
+        </div>
+        <button class="btn" onclick="resetQuiz()">Reset Progress</button>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Search Trigonometry questions..." oninput="filterQuestions()">
+    </div>
+
+    <div id="quiz-container"></div>
+</main>
+
+<script>
+const rawData = [
+    { category: "Trigonometry", id: "trig_1", q: "1. sin A cos B – cos A sin B is equivalent to:", options: ["cos (A – B)", "sin (A – B)", "tan (A – B)", "cos2(A – B)"], answer: 1 },
+    { category: "Trigonometry", id: "trig_2", q: "2. The angular distance of a point on the terrestrial sphere from the north pole is called", options: ["coaltitude", "latitude", "altitude", "codeclination"], answer: 3 },
+    { category: "Trigonometry", id: "trig_3", q: "3. csc 520° is equal to", options: ["cos 20°", "csc 20°", "tan 45°", "sin 20°"], answer: 1 },
+    { category: "Trigonometry", id: "trig_4", q: "4. What is the sine of 820°?", options: ["0.984", "0.866", "-0.866", "-0.5"], answer: 0 },
+    { category: "Trigonometry", id: "trig_5", q: "5. The logarithm of the negative number is", options: ["imaginary", "irrational", "real", "rational"], answer: 0 },
+    { category: "Trigonometry", id: "trig_6", q: "6. The sum of the squares of the sine and cosine of an angle.", options: ["0", "1", "2", "3"], answer: 1 },
+    { category: "Trigonometry", id: "trig_7", q: "7. The logarithm of a number to the base e (2.7182…) is called", options: ["Napierian Logarithm", "Characteristic", "Mantissa", "Briggsian Logarithm"], answer: 0 },
+    { category: "Trigonometry", id: "trig_8", q: "8. The characteristic is equal to the exponent of 10, when the number is written in", options: ["exponential logarithm", "scientific notation", "logarithmic form", "irrational number"], answer: 1 },
+    { category: "Trigonometry", id: "trig_9", q: "9. Napierian logarithms have a base closest to which number?", options: ["2.72", "2.82", "2.92", "10"], answer: 0 },
+    { category: "Trigonometry", id: "trig_10", q: "10. The logarithm of 1 to any base is", options: ["indeterminate", "zero", "infinity", "one"], answer: 1 },
+    { category: "Trigonometry", id: "trig_11", q: "11. sin (270° + β) is equal to", options: ["– cos β", "Sin β", "– sin β", "cos β"], answer: 0 },
+    { category: "Trigonometry", id: "trig_12", q: "12. The sum of the angles in an octant spheric triangle is", options: ["180°", "270°", "360°", "540°"], answer: 1 },
+    { category: "Trigonometry", id: "trig_13", q: "13. The median of a triangle is the line connecting the vertex and the midpoint of the opposite side. For a given triangle, these medians intersect at a point which is called the", options: ["orthocenter", "circumcenter", "centroid", "incenter"], answer: 2 },
+    { category: "Trigonometry", id: "trig_14", q: "14. The altitudes of the sides of a triangle intersects at the point known as", options: ["orthocenter", "circumcenter", "centroid", "incenter"], answer: 0 },
+    { category: "Trigonometry", id: "trig_15", q: "15. The angle which the line of sight to the object makes with the horizontal which is above the eye of the observer is called", options: ["angle of depression", "angle of elevation", "acute angle", "bearing"], answer: 1 },
+    { category: "Trigonometry", id: "trig_16", q: "16. log M – log N is equal to", options: ["log MN", "log (M – N)", "log M/N", "log (N – M)"], answer: 2 },
+    { category: "Trigonometry", id: "trig_17", q: "17. The other form of log a N = b is", options: ["N = b^a", "N = a^b", "N = ab", "N = a/b"], answer: 1 },
+    { category: "Trigonometry", id: "trig_18", q: "18. The point of concurrency of the altitude of the triangle.", options: ["orthocenter", "circumcenter", "centroid", "incenter"], answer: 0 },
+    { category: "Trigonometry", id: "trig_19", q: "19. The point of concurrency of the perpendicular bisector of the sides of the triangle.", options: ["orthocenter", "circumcenter", "centroid", "incenter"], answer: 1 },
+    { category: "Trigonometry", id: "trig_20", q: "20. The point of concurrency of the angle bisector of the triangle is called", options: ["orthocenter", "circumcenter", "centroid", "incenter"], answer: 3 },
+    { category: "Trigonometry", id: "trig_21", q: "21. The logarithm of the reciprocal of N is called the ________ of N", options: ["antilogarithm", "cologarithm", "natural logarithm", "briggsian logarithm"], answer: 1 },
+    { category: "Trigonometry", id: "trig_22", q: "22. The inverse function of a logarithm is known as", options: ["antilogarithm", "cologarithm", "natural logarithm", "briggsian logarithm"], answer: 0 },
+    { category: "Trigonometry", id: "trig_23", q: "23. The cologarithm of a number is the _____ of the logarithm of a number", options: ["positive", "absolute value", "negative", "reciprocal"], answer: 2 },
+    { category: "Trigonometry", id: "trig_24", q: "24. The first table logarithms with 10 as base was developed in 1615 by", options: ["James Naismith", "Henry Briggs", "John Napier", "John Wallis"], answer: 1 },
+    { category: "Trigonometry", id: "trig_25", q: "25. Who invented logarithms in 1614?", options: ["John Wallis", "Henry Briggs", "John Napier", "L’Hospital"], answer: 2 },
+    { category: "Trigonometry", id: "trig_26", q: "26. The number log a b is called the ______ of the system of a base a with respect to the system of base b", options: ["coefficient", "logarithm", "modulus", "exponent"], answer: 2 },
+    { category: "Trigonometry", id: "trig_27", q: "27. Napierian logarithm has a base of", options: ["π", "10", "1", "e"], answer: 3 },
+    { category: "Trigonometry", id: "trig_28", q: "28. log x = ____ ln x", options: ["0.434", "10", "2.303", "e"], answer: 0 },
+    { category: "Trigonometry", id: "trig_29", q: "29. ln x = ____ log x", options: ["0.434", "10", "2.303", "e"], answer: 2 },
+    { category: "Trigonometry", id: "trig_30", q: "30. Which of the following cannot be a base for a logarithm?", options: ["10", "π", "1", "e"], answer: 2 },
+    { category: "Trigonometry", id: "trig_31", q: "31. The integral part of a common logarithm is", options: ["10", "e", "mantissa", "characteristic"], answer: 3 },
+    { category: "Trigonometry", id: "trig_32", q: "32. The mantissa of a logarithm is a", options: ["positive value only", "negative value only", "positive value, negative value or zero", "positive value or zero"], answer: 3 },
+    { category: "Trigonometry", id: "trig_33", q: "33. For 0 < x < 1, ln x is", options: ["positive", "zero", "negative", "between 0 and 1"], answer: 2 },
+    { category: "Trigonometry", id: "trig_34", q: "34. If 1 < N < 10, then", options: ["1 < log N < 2", "0 < log N < 1", "2 < log N < 3", "- 1 < log N < 0"], answer: 1 },
+    { category: "Trigonometry", id: "trig_35", q: "35. To change log a N to log b N, multiply log a N by", options: ["log a b", "log b a", "log N a", "log N b"], answer: 1 },
+    { category: "Trigonometry", id: "trig_36", q: "36. The number loga b and logb a are", options: ["equal", "equal but different in signs", "reciprocal to each other", "negative reciprocal to each other"], answer: 2 },
+    { category: "Trigonometry", id: "trig_37", q: "37. Logarithm using 10 as base", options: ["decimal logarithm", "scientific logarithm", "common logarithm", "Natural logarithm"], answer: 2 },
+    { category: "Trigonometry", id: "trig_38", q: "38. The logarithm of a product is the ____ of the logarithms, and the logarithm of a quotient is the ____ of the logarithms", options: ["sum, difference", "difference, sum", "quotient, product", "product, quotient"], answer: 0 },
+    { category: "Trigonometry", id: "trig_39", q: "39. When a logarithm is expressed as an integer plus a decimal (between 0 and 1), the integer is called", options: ["Briggsian Logarithm", "napierian Logarithm", "Mantissa", "Characteristic"], answer: 3 },
+    { category: "Trigonometry", id: "trig_40", q: "40. The characteristic of a logarithm is 3. the number is between", options: ["1 and 10", "10 and 100", "100 and 1000", "1000 and 10000"], answer: 3 },
+    { category: "Trigonometry", id: "trig_41", q: "41. The characteristics of a common logarithm of a number greater than 1 is", options: ["zero", "positive", "negative", "zero or positive"], answer: 3 },
+    { category: "Trigonometry", id: "trig_42", q: "42. The characteristics is ____ the exponent of 10, when the number is written in scientific notation", options: ["equal to", "greater than", "less than", "none of the above"], answer: 0 },
+    { category: "Trigonometry", id: "trig_43", q: "43. If logarithm to base 10 (denoted as log 10) is called common logarithm and base e is called natural logarithm, what do you call the logarithm of base 2 (denotes as lb)?", options: ["Binary Logarithm", "Bit Logarithm", "Bilogarithm", "all of the above"], answer: 0 },
+    { category: "Trigonometry", id: "trig_44", q: "44. If the unknown in a conditional equation occurs as an exponent, the best way to solve the unknown is by", options: ["raising the power of both sides", "taking the logarithm of both sides", "extracting the root of both sides", "applying the Newton’s method"], answer: 1 },
+    { category: "Trigonometry", id: "trig_45", q: "45. Angles of rotation with the same initial side and terminal side", options: ["Terminal angles", "Conjugate angles", "Coterminal Angle", "Supplementary angles"], answer: 2 },
+    { category: "Trigonometry", id: "trig_46", q: "46. An angle equal to one revolution of 360°", options: ["perigon", "explement angle", "reflex angle", "supplement angle"], answer: 0 },
+    { category: "Trigonometry", id: "trig_47", q: "47. The angle which the line of sight to the object makes with the horizontal above the eye of the observer.", options: ["angle of depression", "angle of elevation", "acute angle", "bearing"], answer: 1 },
+    { category: "Trigonometry", id: "trig_48", q: "48. The angle which the line of sight to the object makes with the horizontal below the eye of the observer.", options: ["angle of depression", "angle of elevation", "acute angle", "bearing"], answer: 0 },
+    { category: "Trigonometry", id: "trig_49", q: "49. A triangle inscribed in a given triangle whose vertices are the feet of the three perpendiculars to the sides from same point inside, the given triangle", options: ["inscribed triangle", "primitive triangle", "pedal triangle", "obtuse triangle"], answer: 2 },
+    { category: "Trigonometry", id: "trig_50", q: "50. The triangle with minimum perimeter but maximum area inscribed in another triangle is known as", options: ["pedal triangle", "Euclid’s triangle", "Primitive triangle", "None of the above"], answer: 0 },
+    { category: "Trigonometry", id: "trig_51", q: "51. A right triangle whose length of sides may be expressed as ratio of integral units.", options: ["pedal triangle", "isosceles triangle", "scalene triangle", "primitive triangle"], answer: 3 },
+    { category: "Trigonometry", id: "trig_52", q: "52. A triangle with no sides equal is known as", options: ["acute triangle", "oblique triangle", "equilateral triangle", "scalene triangle"], answer: 3 },
+    { category: "Trigonometry", id: "trig_53", q: "53. If two triangles have congruent bases, then the ratio of their areas equals the ratio of", options: ["their perimeters", "the lengths of their altitudes", "their sides", "None of the above"], answer: 1 },
+    { category: "Trigonometry", id: "trig_54", q: "54. In an isosceles right triangle, the hypotenuse is ____ times as long as each of the legs", options: ["√2", "√3", "2", "3"], answer: 0 },
+    { category: "Trigonometry", id: "trig_55", q: "55. Which of the following is not a secondary part of a triangle?", options: ["altitudes", "medians", "exterior angles", "sides"], answer: 3 },
+    { category: "Trigonometry", id: "trig_56", q: "56. Which of the following is not a property of a triangle?", options: ["the sum of the three angles is always equal to two right angles", "the sum of two sides is less than the third side", "if the two sides are equal, the angles opposite are unequal", "the altitudes of the triangle meet in a point"], answer: 1 },
+    { category: "Trigonometry", id: "trig_57", q: "57. Given the sides of a triangle as 3 m and 5 m. The third side is", options: ["between 3 m and 8 m", "greater than 8 m", "from 3 m to 7 m", "from 2 m to 8 m"], answer: 3 },
+    { category: "Trigonometry", id: "trig_58", q: "58. A straight line from the vertex of a triangle to the midpoint of the opposite side is known as", options: ["altitude", "median", "height", "A or B"], answer: 1 },
+    { category: "Trigonometry", id: "trig_59", q: "59. Indicate the false statement:", options: ["an altitude of a triangle is a perpendicular drop from any vertex to the opposite side.", "three or more lines which have one point in common are said to be coplanar", "the altitudes of a triangle meet at a point", "a locus is a figure containing all the points and only those which fulfil a given requirement"], answer: 1 },
+    { category: "Trigonometry", id: "trig_60", q: "60. The case of the solution of the triangle in the plane where the given data leads to two solutions", options: ["axioms of Euclid", "absurd case", "ambiguous case", "all of the above"], answer: 2 },
+    { category: "Trigonometry", id: "trig_61", q: "61. The most proved theorem in mathematics", options: ["Gauss lemma", "Fermat’s Theorem", "Ptolemy’s Theorem", "Pythagorean Theorem"], answer: 3 },
+    { category: "Trigonometry", id: "trig_62", q: "62. The least proved theorem in mathematics", options: ["Goldbach conjecture", "Fermat’s last theorem", "Mersennes’s proportion", "Pappus Proportion"], answer: 0 },
+    { category: "Trigonometry", id: "trig_63", q: "63. Equations used for checking the solution to a plane triangle using law of sine’s are as follows: (a+b)/c = cos(1/2(A-B)) / sin(1/2 C). These equations are called", options: ["Diophantine equations", "Mollweide’s equations", "Mohr equations", "Gauss equations"], answer: 1 },
+    { category: "Trigonometry", id: "trig_64", q: "64. Napier’s rule states that the sine of any middle part is equal to the product of the _____ of the opposite parts.", options: ["sine", "cosine", "tangent", "secant"], answer: 1 },
+    { category: "Trigonometry", id: "trig_65", q: "65. Napier’s rule states that the sine of any middle part is equal to the product of the _____ of the adjacent parts.", options: ["sine", "cosine", "tangent", "cotangent"], answer: 2 },
+    { category: "Trigonometry", id: "trig_66", q: "66. How many formulas may be derived from using the Napier’s Rules?", options: ["5", "6", "8", "10"], answer: 3 },
+    { category: "Trigonometry", id: "trig_67", q: "67. The sum of all interior angles in a spherical triangle is always", options: ["greater than 180° but less than 270°", "greater than 180° but less than 360°", "greater than 180° but less than 540°", "greater than 270° but less than 540°"], answer: 2 },
+    { category: "Trigonometry", id: "trig_68", q: "68. The maximum value for the longitude is", options: ["90°", "180°", "45°", "360°"], answer: 1 },
+    { category: "Trigonometry", id: "trig_69", q: "69. The maximum value for a latitude is", options: ["90°", "45°", "180°", "360°"], answer: 0 },
+    { category: "Trigonometry", id: "trig_70", q: "70. If R is the radius of a sphere and E is a spherical excess (in radians), then the area of a spherical triangle is", options: ["πR^2 E", "R^2 E", "1/2 R^2 E", "R^2 / E"], answer: 1 },
+    { category: "Trigonometry", id: "trig_71", q: "71. One minute of the great circle arc on the surface of the earth is equivalent to", options: ["1 statute mile", "1 nautical mile", "60 statute mile", "60 nautical mile"], answer: 1 },
+    { category: "Trigonometry", id: "trig_72", q: "72. A spherical triangle with all angles equals to a right triangle is called ____ spherical triangle", options: ["birectangular", "quadrantal", "trirectangular", "right"], answer: 2 },
+    { category: "Trigonometry", id: "trig_73", q: "73. A spherical triangle with at least one side is a quarter of a great circle called _____ spherical triangle", options: ["octant", "quadrantal", "trirectangular", "birectangular"], answer: 1 },
+    { category: "Trigonometry", id: "trig_74", q: "74. One of the two great circles intersecting at right angle at the poles and dividing equinoctial points and ecliptic into 4 parts", options: ["Nadir", "Zenith", "Declination", "Colure"], answer: 3 },
+    { category: "Trigonometry", id: "trig_75", q: "75. The radius of the earth used in spherical trigonometry is", options: ["3989 statute miles", "3979 statute miles", "3969 statute miles", "3959 statute miles"], answer: 3 },
+    { category: "Trigonometry", id: "trig_76", q: "76. The difference between a nautical mile and a statute mile", options: ["800 ft", "900 ft", "1000 ft", "500 ft"], answer: 0 },
+    { category: "Trigonometry", id: "trig_77", q: "77. Manila has a longitude of 121°05’E. what is the time difference between Manila and Greenwich, England which is at prime meridian?", options: ["8 hrs and 40 mins", "8 hrs and 34 mins", "8 hrs and 14 mins", "8 hrs and 4 mins"], answer: 3 },
+    { category: "Trigonometry", id: "trig_78", q: "78. The earth is divided into how many time zones?", options: ["24", "18", "16", "12"], answer: 0 },
+    { category: "Trigonometry", id: "trig_79", q: "79. In a spherical triangle, two angles (or sides) are on the same species if they are both", options: ["between 0° and 180°", "between 0° and 90°", "between 90° and 180°", "between 0° and 90° or both between 90° and 180°"], answer: 3 },
+    { category: "Trigonometry", id: "trig_80", q: "80. Spherical degree is a unit of spherical area taken as 1/720 of the surface of the sphere. How many spherical degrees a hemisphere have?", options: ["360°", "720°", "180°", "270°"], answer: 0 },
+    { category: "Trigonometry", id: "trig_81", q: "81. Which of the following statements is false about spherical trigonometry?", options: ["if two angles of a spherical triangle are equal, the sides equal are opposite and conversely", "if two angles of a spherical triangle are unequal, and the greater side lies opposite the greater angle, and conversely", "the sum of two sides of a spherical triangle is greater than the third sides", "the sum of all interior angles of a spherical triangles is 360°"], answer: 3 },
+    { category: "Trigonometry", id: "trig_82", q: "82. The sum of the sides of a spherical triangle is always less than", options: ["270°", "360°", "540°", "180°"], answer: 1 },
+    { category: "Trigonometry", id: "trig_83", q: "83. The sum of any two angles of a spherical triangle is", options: ["greater than 180°", "less than 180°", "less than 180° + the third angle", "greater than 180° + the third angle"], answer: 2 },
+    { category: "Trigonometry", id: "trig_84", q: "84. Refers to the angular distance from the equator measured along a meridian", options: ["longitude", "latitude", "meridian", "declination"], answer: 1 },
+    { category: "Trigonometry", id: "trig_85", q: "85. Refers to the angle at either pole between the meridian passing through a point and some fixed meridian known as the prime meridian.", options: ["longitude", "latitude", "declination", "equinox"], answer: 0 },
+    { category: "Trigonometry", id: "trig_86", q: "86. Is half of a great circle terminated by the north pole and south pole.", options: ["longitude", "latitude", "declination", "meridian"], answer: 3 },
+    { category: "Trigonometry", id: "trig_87", q: "87. When the hypotenuse of a right spherical triangle is less than 90°", options: ["the two legs are on the same quadrant", "the two legs are on the different quadrant", "one leg is on the first quadrant and the other on the second quadrant", "none of the above"], answer: 0 },
+    { category: "Trigonometry", id: "trig_88", q: "88. When the hypotenuse of a right spherical triangle is greater than 90°", options: ["the two legs are on the same quadrant", "the two legs are on different quadrants", "one leg is on the first quadrant and the other on the third quadrant", "none of the above"], answer: 1 }
+];
+
+let state = {
+    answers: {},
+    filteredQuestions: []
+};
+
+function resetQuiz() {
+    if (confirm("Are you sure you want to reset all your progress in Trigonometry?")) {
+        state.answers = {};
+        updateStats();
+        renderQuestions();
+    }
+}
+
+function updateStats() {
+    const totalAnswered = Object.keys(state.answers).length;
+    let totalCorrect = 0;
+
+    Object.keys(state.answers).forEach(id => {
+        const item = rawData.find(q => q.id === id);
+        if (item && state.answers[id] === item.answer) {
+            totalCorrect++;
+        }
+    });
+
+    document.getElementById('score-answered').innerText = totalAnswered;
+    document.getElementById('score-correct').innerText = totalCorrect;
+    const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+    document.getElementById('score-accuracy').innerText = `${accuracy}%`;
+    document.getElementById('total-count').innerText = rawData.length;
+}
+
+function handleOptionClick(questionId, optionIdx) {
+    if (state.answers[questionId] !== undefined) return;
+    
+    state.answers[questionId] = optionIdx;
+    updateStats();
+    
+    const qCard = document.getElementById(`card-${questionId}`);
+    if (qCard) {
+        const item = rawData.find(q => q.id === questionId);
+        qCard.outerHTML = renderQuestionCard(item);
+    }
+}
+
+function renderQuestionCard(item) {
+    const userAnswer = state.answers[item.id];
+    const isAnswered = userAnswer !== undefined;
+    const labels = ['A', 'B', 'C', 'D'];
+
+    const optionsHtml = item.options.map((opt, idx) => {
+        let btnClass = "option-btn";
+        if (isAnswered) {
+            if (idx === item.answer) {
+                btnClass += " correct";
+            } else if (idx === userAnswer) {
+                btnClass += " incorrect";
+            }
+        }
+
+        return `
+            <li>
+                <button 
+                    class="${btnClass}" 
+                    onclick="handleOptionClick('${item.id}', ${idx})"
+                    ${isAnswered ? 'disabled' : ''}>
+                    <strong>${labels[idx]}.</strong>&nbsp; ${opt}
+                </button>
+            </li>
+        `;
+    }).join('');
+
+    return `
+        <div class="question-card" id="card-${item.id}">
+            <span class="category-tag">${item.category}</span>
+            <h2 class="question-title">${item.q}</h2>
+            <ul class="options-list">
+                ${optionsHtml}
+            </ul>
+        </div>
+    `;
+}
+
+function filterQuestions() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    state.filteredQuestions = rawData.filter(item => {
+        return item.q.toLowerCase().includes(search) || 
+               item.options.some(opt => opt.toLowerCase().includes(search));
+    });
+    renderQuestions();
+}
+
+function renderQuestions() {
+    const container = document.getElementById('quiz-container');
+    if (state.filteredQuestions.length === 0) {
+        container.innerHTML = `<div class="no-results">No questions match your search.</div>`;
+        return;
+    }
+    container.innerHTML = state.filteredQuestions.map(renderQuestionCard).join('');
+}
+
+state.filteredQuestions = [...rawData];
+renderQuestions();
+updateStats();
+</script>
+</body>
+</html>

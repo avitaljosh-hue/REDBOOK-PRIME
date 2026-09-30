@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Book Review</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    width: min(920px, 92%);
+    text-align: center;
+    padding: 45px 20px;
+}
+.badge {
+    display: inline-block;
+    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 999px;
+    font-size: .8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: .85;
+}
+h1 {
+    font-size: clamp(2.2rem, 7vw, 4.5rem);
+    margin: 18px 0 8px;
+}
+.subtitle {
+    max-width: 620px;
+    margin: 0 auto 35px;
+    color: #d1d5db;
+    font-size: 1.05rem;
+}
+.subjects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 760px;
+    margin: auto;
+}
+.card {
+    text-decoration: none;
+    color: #111827;
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    text-align: left;
+    transition: transform .18s, box-shadow .18s;
+    box-shadow: 0 8px 25px rgba(0,0,0,.18);
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 35px rgba(0,0,0,.25);
+}
+.card h2 { margin: 0 0 7px; font-size: 1.15rem; }
+.card p { margin: 0; color: #6b7280; font-size: .9rem; }
+footer {
+    margin-top: 35px;
+    color: #9ca3af;
+    font-size: .8rem;
+}
+@media (max-width: 650px) {
+    .subjects { grid-template-columns: 1fr; }
+    .container { padding: 30px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <span class="badge">PRIME RED BOOK</span>
+    <h1>RED BOOK</h1>
+    <p class="subtitle">
+        Choose a subject to open the corresponding review material.
+    </p>
+
+    <div class="subjects">
+        <a class="card" href="algebra2.html">
+            <h2>Algebra</h2>
+            <p>Open Algebra review →</p>
+        </a>
+
+        <a class="card" href="trigonometry2.html">
+            <h2>Trigonometry</h2>
+            <p>Open Trigonometry review →</p>
+        </a>
+
+        <a class="card" href="plain-solid-geometry2.html">
+            <h2>Plain &amp; Solid Geometry</h2>
+            <p>Open Geometry review →</p>
+        </a>
+
+        <a class="card" href="engineering-economics2.html">
+            <h2>Engineering Economics</h2>
+            <p>Open Engineering Economics review →</p>
+        </a>
+
+        <a class="card" href="analgeom.html">
+            <h2>Analytic Geometry</h2>
+            <p>Open Analytic Geometry review →</p>
+        </a>
+    </div>
+
+    <footer>Made by Marc Joshua Avital</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Economics - Interactive Quiz</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+    line-height: 1.55;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #111827;
+    color: white;
+    padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  header h1 { margin: 0 0 5px; font-size: 1.35rem; }
+  header p { margin: 0; opacity: .8; font-size: .9rem; }
+  .back { display: inline-block; margin-top: 10px; color: white; text-decoration: none; }
+  
+  .score-banner {
+    background: #1e293b;
+    color: #fff;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+  .score-banner button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .score-banner button:hover { background: #2563eb; }
+
+  main { max-width: 900px; margin: 22px auto; padding: 0 14px 40px; }
+  
+  .question {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.08);
+  }
+  .question h2 { margin: 0 0 12px; font-size: 1rem; font-weight: 600; }
+  
+  .options { list-style: none; padding-left: 0; margin: 0; }
+  .options li {
+    margin: 7px 0;
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .options li:hover { background: #f9fafb; border-color: #d1d5db; }
+  .options li.correct {
+    background-color: #d1fae5 !important;
+    border-color: #10b981 !important;
+    color: #065f46;
+    font-weight: 600;
+  }
+  .options li.incorrect {
+    background-color: #fee2e2 !important;
+    border-color: #ef4444 !important;
+    color: #991b1b;
+  }
+  .letter { font-weight: 700; margin-right: 6px; }
+
+  @media(max-width:600px){
+    header { padding: 14px; }
+    main { padding: 0 9px 30px; }
+    .question { padding: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Engineering Economics</h1>
+  <p>120 Interactive Questions</p>
+  <a class="back" href="index.html">← Back to Index</a>
+  <div class="score-banner">
+    <span id="score-text">Score: 0 / 120</span>
+    <button onclick="resetQuiz()">Reset Quiz</button>
+  </div>
+</header>
+
+<main id="quiz-container"></main>
+
+<script>
+const quizData = [
+  { q: "1. Which one of the following contains only items which are considered fixed charges?", options: ["A. Interest, taxes, amortization, insurance, rent", "B. Amortization, insurance, steam cost, painting, cleaning", "C. Interest, taxes, replacements, labor for repairs", "D. Interest, taxes, rent, power cost, oil cost"], answer: 0 },
+  { q: "2. An economic study is made of the total amount cost (C) for a series of alternative investment (P) for a given project. IF C is plotted as the ordinate versus P, the most desirable occurs when", options: ["A. dC/dP =1", "B. dC/dP =CO", "C. dC/dP = 0", "D. dC/dP = +1"], answer: 2 },
+  { q: "3. Reduction in the level of national income and output usually accompanied by the fall in the general price level", options: ["A. Devaluation", "B. Deflation", "C. Inflation", "D. Depreciation"], answer: 1 },
+  { q: "4. It is a series of equal payments occurring at equal interval of time.", options: ["A. Annuity", "B. Debt", "C. Amortization", "D. Deposit"], answer: 0 },
+  { q: "5. The place where buyers and sellers come together", options: ["A. Market", "B. Business", "C. Recreation center", "D. Buy and Sell Section"], answer: 0 },
+  { q: "6. A market whereby there is only one buyer of an item for which there are no good substitute", options: ["A. Monopsony", "B. Oligopoly", "C. Monopoly", "D. Oligopsony"], answer: 0 },
+  { q: "7. It is a series of equal payments occurring at equal interval of time where the first payment is made after several periods, after the beginning of the payment", options: ["A. Perpetuity", "B. Ordinary Annuity", "C. Annuity due", "D. Deferred Annuity"], answer: 3 },
+  { q: "8. The total income equals the total operating cost", options: ["A. Balanced Sheet", "B. In-place Value", "C. Check and Balance", "D. Break even-no gain no loss"], answer: 3 },
+  { q: "9. Kind of Obligation which has no condition attached", options: ["A. Analytic", "B. Pure", "C. Gratuitous", "D. Private"], answer: 1 },
+  { q: "10. Direct Labor cost incurred in the factory and direct materials cost are the costs of all materials that go into production. The sum of these two direct costs is known as", options: ["A. GS and A expenses", "B. Operating and maintenance costs", "C. Prime Cost", "D. O and M costs"], answer: 2 },
+  { q: "11. An index of short term paying ability is called", options: ["A. Receivable turn-over", "B. Profit margin ratio", "C. Current ratio", "D. Acid-test ratio"], answer: 3 },
+  { q: "12. An artificial expense that spreads the purchase price of an asset or another property over a number of years", options: ["A. Depreciation", "B. Sinking fund", "C. Amnesty", "D. Bond"], answer: 0 },
+  { q: "13. Estimated value at the end of the useful life", options: ["A. Market Value", "B. Fair Value", "C. Salvage Value", "D. Book Value"], answer: 2 },
+  { q: "14. Consists of the actual counting or determination of the actual quantity of the materials on hand as of a given date", options: ["A. Physical inventory", "B. Material Update", "C. Technological Assessment", "D. Material Count"], answer: 0 },
+  { q: "15. Additional information of prospective bidders on contract documents issued prior to bidding date", options: ["A. Delict", "B. Escalatory", "C. Technological Assessment", "D. Bid Bulletin"], answer: 3 },
+  { q: "16. An evil wrong committed by a person damaged another person’s property or reputation is", options: ["A. Tort", "B. Material breach", "C. Negligence", "D. fraud"], answer: 0 },
+  { q: "17. A series of uniform accounts over an infinite period of time", options: ["A. Depreciation", "B. Annuity", "C. Perpetuity", "D. Inflation"], answer: 2 },
+  { q: "18. The quantity of a given commodity that is offered for sale at a certain price at a given place and time", options: ["A. Demand", "B. Supply", "C. Stocks", "D. Goods"], answer: 1 },
+  { q: "19. Work-in process is classified as", options: ["A. An asset", "B. A Liability", "C. An Expenses", "D. An owner’s equity"], answer: 0 },
+  { q: "20. What is the highest position in the corporation?", options: ["A. President", "B. Board of Directors", "C. Chairman of the Board", "D. Stockholders"], answer: 2 },
+  { q: "21. Type of ownership in business where individuals exercise and enjoy the right in their own interest", options: ["A. Equitable", "B. Public", "C. Private", "D. Pure"], answer: 2 },
+  { q: "22. Decrease in the value of a physical due to the passage of time", options: ["A. Inflation", "B. Depletion", "C. Recession", "D. Depreciation"], answer: 3 },
+  { q: "23. An association of two or more individuals for the purpose of operating a business as co-owners for profit", options: ["A. Sole proprietorship", "B. Company", "C. Partnership", "D. Corporation"], answer: 2 },
+  { q: "24. We may classify an interest rate, which specifies the actual rate of interest on the principal for one year as", options: ["A. Nominal rate", "B. Rate of return", "C. Exact interest rate", "D. Effective rate"], answer: 3 },
+  { q: "25. Parties whose consent or signature in a contract is not considered intelligent", options: ["A. Dead persons", "B. Senior Citizens", "C. Demented Persons", "D. Minors"], answer: 2 },
+  { q: "26. It is defined to be the capacity of a commodity to satisfy human want", options: ["A. Discount", "B. Luxury", "C. Necessity", "D. Utility"], answer: 3 },
+  { q: "27. It is the amount which a willing buyer will pay to a willing seller for a property where each has equal advantage and is under no compulsion to buy or sell", options: ["A. Fair value", "B. Market Value", "C. Book Value", "D. Salvage Value"], answer: 1 },
+  { q: "28. This occurs in a situation where a commodity or service is supplied by a number of vendors entering the market", options: ["A. Perfect competition", "B. Oligopoly", "C. Monopoly", "D. Elastic Demand"], answer: 0 },
+  { q: "29. These products or services that are desired by human and will be purchased it money is available after the required necessities have obtained", options: ["A. Utilities", "B. Necessities", "C. Luxuries", "D. Product goods and services"], answer: 2 },
+  { q: "30. These are products or services that are required to support human life and activities, that will be purchased in somewhat the same quantity even though the price varies considerably", options: ["A. Utilities", "B. Necessities", "C. Luxuries", "D. Product goods and services"], answer: 1 },
+  { q: "31. A condition where only few individuals produce a certain product and that any action of one will lead to almost the same action of the others", options: ["A. Oligopoly", "B. Semi-monopoly", "C. Monopoly", "D. Perfect Competition"], answer: 0 },
+  { q: "32. Grand total of the assets and operational capability of a corporation", options: ["A. Authorized capital", "B. Investment", "C. Subscribed capital", "D. Money Market"], answer: 0 },
+  { q: "33. The worth of the property equal to the original cost less depreciation", options: ["A. Scrap Value", "B. Face Value", "C. Market Value", "D. Book Value"], answer: 3 },
+  { q: "34. Money paid for the use of borrowed capital", options: ["A. Discount", "B. Credit", "C. Interest", "D. Profit"], answer: 2 },
+  { q: "35. Liquid assets such as cash and other assets that can be converted quickly into cash, such as accounts receivable and merchandise are called", options: ["A. Total assets", "B. Fixed assets", "C. Current assets", "D. None of the above"], answer: 2 },
+  { q: "36. The length of time which the property may be operated at a profit", options: ["A. Physical life", "B. Economic life", "C. Operating life", "D. All of the above"], answer: 1 },
+  { q: "37. The provision in the contract that indicates the possible adjustment of material cost and labor cost", options: ["A. Secondary clause", "B. Escalatory clause", "C. Contingency clause", "D. Main clause"], answer: 1 },
+  { q: "38. The present worth of all depreciation over the economic life of the item is called", options: ["A. Book value", "B. Capital recovery", "C. Depreciation recovery", "D. sinking fund"], answer: 1 },
+  { q: "39. Gross profit sales less cost of goods sold, as a percentage of a sales is called", options: ["A. Profit margin", "B. Gross margin", "C. Net income", "D. Rate of return"], answer: 1 },
+  { q: "40. Worth of the property as shown in the accounting records of an enterprise", options: ["A. Fair value", "B. Market Value", "C. Salvage Value", "D. Book Value"], answer: 3 },
+  { q: "41. Those funds that are required to make the enterprise or project a going concern", options: ["A. Initial investment", "B. Current Accounts", "C. Working capital", "D. Subscribed capital"], answer: 2 },
+  { q: "42. A market situation where there is only seller with many buyer", options: ["A. Monopoly", "B. Monopsony", "C. Oligopoly", "D. Oligopsony"], answer: 0 },
+  { q: "43. A market situation where there are few sellers and few buyers", options: ["A. Oligopoly", "B. Oligopsony", "C. Bilateral Oligopoly", "D. Bilateral Oligopsony"], answer: 2 },
+  { q: "44. A market situation where there is one seller and one buyer", options: ["A. Monopoly", "B. Monopsony", "C. Bilateral Monopoly", "D. Bilateral Monopsony"], answer: 2 },
+  { q: "45. A market situation where there are only two buyers with many sellers", options: ["A. Duopoly", "B. Oligopoly", "C. Duopsony", "D. Oligopsony"], answer: 2 },
+  { q: "46. The cumulative effect of elapsed time on the money value of an event, based on the earning power of equivalent invested funds capital should or will earn", options: ["A. Present Worth factor", "B. Interest rate", "C. Time value of money", "D. Yield"], answer: 2 },
+  { q: "47. Defined as the future value minus the present value", options: ["A. Interest", "B. Discount", "C. Discount", "D. Capital"], answer: 0 },
+  { q: "48. The flow back of profit plus depreciation from a given project is called", options: ["A. Capital recovery", "B. Cash flow", "C. Economic Return", "D. Earning Value"], answer: 1 },
+  { q: "49. The profit derived from a project or business enterprise without consideration of obligations to financial contributions or claims of other based on profit", options: ["A. Economic return", "B. Yield", "C. Earning value", "D. Expected Yield"], answer: 0 },
+  { q: "50. The payment for use of borrowed money is called", options: ["A. loan", "B. Maturity value", "C. Interest", "D. principal"], answer: 2 },
+  { q: "51. The interest rate at which the present work of the cash on a project is zero of the interest earned by an investment.", options: ["A. Effective rate", "B. Nominal rate", "C. Rate of return", "D. Yield"], answer: 2 },
+  { q: "52. The ratio of the interest payment to be principal for a given unit of time and usually expressed as a percentage of the principal", options: ["A. interest", "B. Interest rate", "C. investment", "D. All of the above"], answer: 1 },
+  { q: "53. The true value of interest rate computed by equations for compound interest for a 1-year period is known as", options: ["A. Expected return", "B. Interest", "C. Nominal interest", "D. Effective interest"], answer: 3 },
+  { q: "54. The intangible item of value from the executive right of a company in a stated region of the country", options: ["A. Market value", "B. Book Value", "C. Goodwill value", "D. Franchise value"], answer: 3 },
+  { q: "55. The recorded current value of an asset is known as", options: ["A. Scrap value", "B. Salvage value", "C. Book value", "D. Present value"], answer: 2 },
+  { q: "56. Scrap value of an asset is sometimes known as", options: ["A. Book value", "B. Salvage value", "C. Replacement value", "D. Future value"], answer: 1 },
+  { q: "57. Sometimes called second hand value", options: ["A. Scrap value", "B. Salvage value", "C. Book value", "D. Going value"], answer: 1 },
+  { q: "58. An intangible value which is actually operating concern has due to its operation", options: ["A. Book Value", "B. Fair value", "C. Goodwill Value", "D. Going Value"], answer: 3 },
+  { q: "59. The value which has a disinterested third party, different from the buyer and seller, will determine in order to establish a price acceptable to both parties", options: ["A. Market Value", "B. Goodwill value", "C. Fair value", "D. Franchise value"], answer: 2 },
+  { q: "60. A type of annuity where the payments are made at the end of each payment period starting from the first period", options: ["A. Ordinary annuity", "B. Annuity due", "C. Deferred annuity", "D. Perpetuity"], answer: 0 },
+  { q: "61. A type of annuity where the payments are made at the start of each period, beginning from the first period", options: ["A. Ordinary annuity", "B. Annuity due", "C. Deferred annuity", "D. perpetuity"], answer: 1 },
+  { q: "62. Which is NOT an essential element of an ordinary annuity?", options: ["A. The amounts of all payments are equal", "B. The payments are made at equal interval of time", "C. The first payment is made at the beginning of each period", "D. Compound interest is paid on all amounts in the annuity"], answer: 2 },
+  { q: "63. A is a periodic payment and I is the interest rate, then present worth of a perpetuity=", options: ["A. Ai", "B. Ain", "C. Ain /i", "D. A/i"], answer: 3 },
+  { q: "64. A mathematical expression also known as the present value of an annuity of one called", options: ["A. Load factor", "B. Demand factor", "C. Sinking fund", "D. Present worth factor"], answer: 3 },
+  { q: "65. As applied to a capitalized asset, the distribution of the initial cost by a periodic change to operation as in depreciation or the reduction of a debt by either periodic or irregular prearranged program is called", options: ["A. Annuity", "B. Capital recovery", "C. Annuity factor", "D. amortization"], answer: 3 },
+  { q: "66. The reduction of the value of an asset due to constant use and passage of time", options: ["A. Scrap value", "B. depletion", "C. depreciation", "D. Book value"], answer: 2 },
+  { q: "67. A method of computing depreciation in which the annual charge is a fixed percentage of the depreciation book value at the beginning of the year to which the depreciation applies.", options: ["A. Straight line method", "B. Sinking fund method", "C. SYD method", "D. Declining balance method"], answer: 3 },
+  { q: "68. A method of depreciation whereby the amount to recover is spread uniformly over the estimated life of the asset in terms of the periods or units of output", options: ["A. Straight line method", "B. Sinking fund method", "C. Declining balance method", "D. SYD method"], answer: 0 },
+  { q: "69. Which of the following depreciation methods cannot have a salvage value of zero?", options: ["A. Straight line method", "B. Sinking fund method", "C. Declining balance method", "D. SYD method"], answer: 2 },
+  { q: "70. A method of depreciation where a fixed sum money is regularly deposited at compound interest in a real or imaginary fund in order to accumulate an amount equal to the total depreciation of an asset at the end of the asset’s estimated life", options: ["A. Straight line method", "B. Sinking fund method", "C. Declining balance method", "D. SYD method"], answer: 1 },
+  { q: "71. The function of interest rate and time that determines the cumulative amount of a sinking fund resulting from specific periodic deposits", options: ["A. Sinking fund factor", "B. Present worth factor", "C. Capacity factor", "D. Demand factor"], answer: 0 },
+  { q: "72. The first cost of any property includes", options: ["A. The original purchase price and freight and transportation charges", "B. Installation expenses", "C. Initial taxes and permits fee", "D. All of the above"], answer: 3 },
+  { q: "73. In SYD method, the sum of years digit is calculated using the formula with n= number of useful years if the equipment", options: ["A. N(N-1)/1", "B. N(N+1)/2", "C. N(N+1)", "D. N(N-1)"], answer: 1 },
+  { q: "74. Capitalized cost of any property is equal to the", options: ["A. Annual cost", "B. First cost + interest of the first cost", "C. First cost + interest of perpetual maintenance", "D. First cost + salvage value"], answer: 2 },
+  { q: "75. The lessening of the value of an asset due to the decrease in the quantity available (referring to the natural resources, coal, oil, etc.)", options: ["A. Depreciation", "B. Depletion", "C. Inflation", "D. Incremental cost"], answer: 1 },
+  { q: "76. Is the simplest form a business organization", options: ["A. Sole proprietorship", "B. Partnership", "C. Enterprise", "D. Corporation"], answer: 0 },
+  { q: "77. A distinct legal entity which can practically transact any business transaction which a real person could do", options: ["A. Sole proprietorship", "B. enterprise", "C. partnership", "D. corporation"], answer: 3 },
+  { q: "78. An association of two or more persons for a purpose of engaging in a profitable business", options: ["A. Sole proprietorship", "B. Enterprise", "C. Partnership", "D. Corporation"], answer: 2 },
+  { q: "79. Double taxation is a disadvantage of which business organization?", options: ["A. Sole proprietorship", "B. partner", "C. corporation", "D. enterprise"], answer: 2 },
+  { q: "80. Which is NOT a type of a business organization?", options: ["A. Sole of Proprietor", "B. Corporation", "C. Enterprise", "D. Partnership"], answer: 2 },
+  { q: "81. What is the minimum number of incorporators in order that a corporation be organized?", options: ["A. 3", "B. 5", "C. 10", "D. 7"], answer: 1 },
+  { q: "82. In case of Bankruptcy of a partnership", options: ["A. The partners are not liable for the liabilities of the partnership", "B. The partnership assets excluding the partners personal assets only will be used to pay the liabilities", "C. The partners personal assets are attached to the debt of the partnership", "D. The partners may sell stock to general additional capital"], answer: 2 },
+  { q: "83. Which is TRUE about partnership?", options: ["A. It has a perpetual life", "B. It will be dissolved if one of the partners ceases to be connected with the partnership", "C. It can be handed down from one generation of partners to another", "D. Its capitalization must be equal for each partner"], answer: 1 },
+  { q: "84. Which is true about corporation?", options: ["A. It is not the best form of business organization", "B. The minimum number of incorporators to start a corporation is three", "C. Its life is dependent on the lives of the incorporators", "D. The stockholders of the corporation are only liable to the extent of their investment"], answer: 3 },
+  { q: "85. Represent ownership and enjoys certain preferences than ordinary stock", options: ["A. Authorized capital stock", "B. Preferred stock", "C. Common stock", "D. Incorporator’s stock"], answer: 1 },
+  { q: "86. Represent the ownership of stockholders who have a residual claim on the assets of the corporation after all other claims have been settled", options: ["A. Authorized capital stock", "B. Preferred stock", "C. Incorporators stock", "D. Common stock"], answer: 3 },
+  { q: "87. The amount of company’s profit that the board of directors of the corporation decides to distribute to ordinary shareholders", options: ["A. Dividend", "B. Return", "C. Share stock", "D. Par value"], answer: 0 },
+  { q: "88. A certificate of indebtness of a corporation usually for a period not less than 10 years and guaranteed by a mortgage on certain assets of the corporation", options: ["A. Bond", "B. T-Bill", "C. Preferred stock", "D. Common Stock"], answer: 0 },
+  { q: "89. A form of fixed-interest security issued by central or, local government, companies, banks or other institutions. They are usually a form of long-term security, buy may be irredeemable, secured or unsecured", options: ["A. Bond", "B. T-bills", "C. Certificate of deposit", "D. All of these"], answer: 0 },
+  { q: "90. A type of bond where the corporation pledges securities which it owns (i.e. Stock, bonds of the subsidiaries)", options: ["A. Mortgage", "B. Registered Bond", "C. Coupon bond", "D. Collateral trust bond"], answer: 3 },
+  { q: "91. A type of bond which does not have security except a promise to pay by issuing corporation", options: ["A. Mortgage bond", "B. Registered bond", "C. Collateral trust bond", "D. Debenture bond"], answer: 3 },
+  { q: "92. A type of bond issued jointly by two or more corporations", options: ["A. Joint bond", "B. Debenture bond", "C. Registered bond", "D. Collateral trust bond"], answer: 0 },
+  { q: "93. A type of bond whose guarantee is in lie on railroad equipments", options: ["A. Equipments obligation bond", "B. Debenture bond", "C. Registered bond", "D. Infrastructure bond"], answer: 0 },
+  { q: "94. If the security of the bond is a mortgage on certain specified asset of a corporation, this bond is classified as", options: ["A. Registered bond", "B. Mortgage bond", "C. Coupon bond", "D. Joint bond"], answer: 1 },
+  { q: "95. A type of bond where the corporation’s owners name is recorded and the interest is paid periodically to the owners with their asking for it", options: ["A. Registered Bond", "B. Preferred bond", "C. Incorporators bond", "D. All of these"], answer: 0 },
+  { q: "96. Bond to which are attached coupon indicating the interest due and the date when such interest is to be paid.", options: ["A. Registered bond", "B. Coupon bond", "C. Mortgage bond", "D. Collateral trust bond"], answer: 1 },
+  { q: "97. An amount of money invested at 12 % interest per annum will double in approximately", options: ["A. 4 years", "B. 5 years", "C. 6 years", "D. 7 years"], answer: 2 },
+  { q: "98. The 72-rule thumb is used to determine", options: ["A. How many years money will triple", "B. How many years money will be double", "C. How many years to mass 1 million", "D. How many years to quadruple the money"], answer: 1 },
+  { q: "99. To triple the principal, one must use", options: ["A. integration", "B. derivatives", "C. logarithms", "D. Implicit functions"], answer: 2 },
+  { q: "100. A currency traded in a foreign exchange market for which the demand is consistently high in relation to its supply", options: ["A. Money market", "B. Hard currency", "C. Treasury bill", "D. Certificate of deposit"], answer: 1 },
+  { q: "101. Everything a company owns and which has a money value is classified as an asset. Which of the following is classified as an asset", options: ["A. Intangible assets", "B. Fixed assets", "C. Trade investments", "D. All of these"], answer: 3 },
+  { q: "102. Which is an example of an intangible asset?", options: ["A. Cash", "B. Furniture", "C. Investment in subsidiary companies", "D. Patents"], answer: 3 },
+  { q: "103. Land, buildings, plant and machinery are examples of", options: ["A. Current assets", "B. Trade investment", "C. Fixed assets", "D. Intangible assets"], answer: 2 },
+  { q: "104. An increase in the value of a capital asset is called", options: ["A. Profit", "B. Capital Gain", "C. Capital Expenditure", "D. Capital stock"], answer: 1 },
+  { q: "105. The reduction in the money value of a capital asset is called", options: ["A. Capital expenditure", "B. Capital loss", "C. loss", "D. Deficit"], answer: 1 },
+  { q: "106. It is a negotiable claim issued by bank lieu of a term deposit", options: ["A. Time deposit", "B. Bond", "C. Capital gain", "D. Certificate of deposit"], answer: 3 },
+  { q: "107. Any particular raw material or primary product (e.g. Cloth, wool, flour, coffee) is called", options: ["A. Utility", "B. Necessity", "C. commodity", "D. stock"], answer: 2 },
+  { q: "108. It denotes the fall in the exchange rate of one currency in terms of others. The term usually applies to floating exchange rates", options: ["A. Currency appreciation", "B. Currency devaluation", "C. Currency float", "D. Currency depreciation"], answer: 3 },
+  { q: "109. The deliberate lowering of the price of a nation’s currency in terms of the accepted standard (Gold, American dollar or the British pound)", options: ["A. Currency appreciation", "B. Currency devaluation", "C. Currency float", "D. Currency depreciation"], answer: 1 },
+  { q: "110. The residual value of a company’s assets after all outside liabilities (Shareholders excluded) has been allowed for", options: ["A. Dividend", "B. Equity", "C. Return", "D. Per value"], answer: 1 },
+  { q: "111. A saving which takes place because goods are not available for consumption rather than the consumer really want to save.", options: ["A. Compulsory saving", "B. Consumer saving", "C. Forced saving", "D. All of these"], answer: 2 },
+  { q: "112. A document that shows proof of legal ownership of a financial security", options: ["A. Bond", "B. Bank notes", "C. Coupon", "D. check"], answer: 0 },
+  { q: "113. Defined as the capacity of commodity to satisfy human want", options: ["A. Discount", "B. Necessity", "C. Luxuries", "D. Utility"], answer: 3 },
+  { q: "114. It is the profit obtained by selling stocks at a higher price than its original purchase price", options: ["A. Debenture", "B. Goodwill", "C. Capital Gain", "D. Internal rate of return"], answer: 2 },
+  { q: "115. The quantity of a certain commodity that is offered for sale at a certain price at a given time and place", options: ["A. Demand", "B. Supply", "C. Utility", "D. Market"], answer: 1 },
+  { q: "116. The quantity of a certain commodity that is bought at a certain price at a given time and place", options: ["A. Demand", "B. Supply", "C. Market", "D. Utility"], answer: 0 },
+  { q: "117. “When free competition exists, the price of a product will be that value where supply is equal to the demand”", options: ["A. Law of diminishing return", "B. Law of Supply", "C. Law of Demand", "D. Law of Supply and Demand"], answer: 3 },
+  { q: "118. “When one of the factors or production is fixed in quantity or is difficult to increase, increasing the other factors of production will result in a less than proportionate increase in output”", options: ["A. Law of diminishing return", "B. Law of supply", "C. Law of Demand", "D. Law of supply and demand"], answer: 0 },
+  { q: "119. GATT stands for", options: ["A. General Agreement of Tariff and Trade", "B. General Arrangement of Tariff and Trade", "C. Global Agreement of Tariff and Trade", "D. Global Arrangement of Tariff and Trade"], answer: 0 },
+  { q: "120. The letter D in the Roman Numerals is", options: ["A. 50", "B. 100", "C. 500", "D. 1000"], answer: 2 }
+];
+
+let userAnswers = new Array(quizData.length).fill(null);
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  
+  quizData.forEach((qData, qIndex) => {
+    const section = document.createElement('section');
+    section.className = 'question';
+    
+    const h2 = document.createElement('h2');
+    h2.textContent = qData.q;
+    section.appendChild(h2);
+    
+    const ul = document.createElement('ol');
+    ul.className = 'options';
+    
+    qData.options.forEach((optionText, oIndex) => {
+      const li = document.createElement('li');
+      li.textContent = optionText;
+      
+      if (userAnswers[qIndex] !== null) {
+        if (oIndex === qData.answer) {
+          li.classList.add('correct');
+        } else if (userAnswers[qIndex] === oIndex) {
+          li.classList.add('incorrect');
+        }
+      } else {
+        li.onclick = () => selectOption(qIndex, oIndex);
+      }
+      
+      ul.appendChild(li);
+    });
+    
+    section.appendChild(ul);
+    container.appendChild(section);
+  });
+  
+  updateScore();
+}
+
+function selectOption(qIndex, oIndex) {
+  if (userAnswers[qIndex] !== null) return;
+  userAnswers[qIndex] = oIndex;
+  renderQuiz();
+}
+
+function updateScore() {
+  let score = 0;
+  userAnswers.forEach((ans, idx) => {
+    if (ans === quizData[idx].answer) {
+      score++;
+    }
+  });
+  document.getElementById('score-text').textContent = `Score: ${score} / ${quizData.length}`;
+}
+
+function resetQuiz() {
+  userAnswers = new Array(quizData.length).fill(null);
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+
+</body>
+</html>

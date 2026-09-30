@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plain and Solid Geometry Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --correct-bg: #dcfce7;
+            --correct-border: #16a34a;
+            --correct-text: #15803d;
+            --incorrect-bg: #fee2e2;
+            --incorrect-border: #dc2626;
+            --incorrect-text: #b91c1c;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 { margin: 0; font-size: 1.25rem; }
+        .stats { font-size: 0.9rem; opacity: 0.9; }
+
+        main {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 0 1rem 3rem;
+        }
+
+        .controls {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .question-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled { cursor: default; }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+            color: var(--correct-text);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect-border);
+            color: var(--incorrect-text);
+        }
+
+        .category-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: #e2e8f0;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .score-banner {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .score-item { display: flex; flex-direction: column; }
+        .score-val { font-size: 1.5rem; font-weight: 700; }
+        .score-lbl { font-size: 0.8rem; opacity: 0.9; }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn:hover { background: var(--primary-hover); }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+         .back,
+        .back:visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #ccc;
+        }
+        
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div>
+            <h1>Plain & Solid Geometry Quiz</h1>
+        </div>
+        <div class="stats">
+            Total Questions: <span id="total-count">0</span>
+        </div>
+    </div>
+    <a class="back" href="index.html">← Back to Index</a>
+</header>
+
+<main>
+    <div class="score-banner">
+        <div class="score-item">
+            <span class="score-val" id="score-answered">0</span>
+            <span class="score-lbl">Answered</span>
+        </div>
+        <div class="score-item">
+            <span class="score-val" id="score-correct">0</span>
+            <span class="score-lbl">Correct</span>
+        </div>
+        <div class="score-item">
+            <span class="score-val" id="score-accuracy">0%</span>
+            <span class="score-lbl">Accuracy</span>
+        </div>
+        <button class="btn" onclick="resetQuiz()">Reset Progress</button>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Search Plain & Solid Geometry questions..." oninput="filterQuestions()">
+    </div>
+
+    <div id="quiz-container"></div>
+</main>
+
+<script>
+const rawData = [
+    { category: "Plain and Solid Geometry", id: "geo_1", q: "1. An annulus is a plane figure which is composed of two concentric circles. The area of the annulus can be calculated by getting the difference between the area of the larger circle and the area of the smaller circle. Also, its area can be calculated by removing the hole. This method is called", options: ["law of extremities", "law of reduction", "law of deduction", "sharp theorem"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_2", q: "2. Each of the faces of a regular hexahedron is a", options: ["square", "triangle", "rectangle", "hexagon"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_3", q: "3. It is a polyhedron of which two faces are equal polygons in parallel planes and the other faces are parallelogram", options: ["tetrahedron", "prism", "frustum", "prismatoid"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_4", q: "4. The apothem of a polygon is ___ of its inscribed circle.", options: ["radius", "circumference", "diameter", "length"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_5", q: "5. Each angle of regular dodecagon is equal to", options: ["135°", "150°", "125°", "105°"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_6", q: "6. The area bounded by two concentric circles is called", options: ["ring", "disk", "annulus", "sector"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_7", q: "7. One-fourth of a great circle is called", options: ["cone", "sector", "quadrant", "arc"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_8", q: "8. Points that lie on the same plane are called", options: ["coplanar", "parallel", "collinear", "oblique"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_9", q: "9. The volume of a circular cylinder is equal to the product of its base and altitude", options: ["axiom", "postulate", "theorem", "corollary"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_10", q: "10. The study of properties of figures in three dimensions.", options: ["physics", "plane trigonometry", "solid geometry", "trigonometry"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_11", q: "11. A plane closed curve, all points of which are the same distance from a point within, called the center", options: ["polyhedron", "polygon", "circle", "ellipse"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_12", q: "12. What is the angle of π and less than 2π?", options: ["straight line", "obtuse angle", "oblique angle", "acute angle"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_13", q: "13. What is the value in degrees of 1 radian?", options: ["90°", "57.3°", "60°", "33°"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_14", q: "14. Prisms are named according to their ____.", options: ["diagonals", "sides", "vertices", "bases"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_15", q: "15. In plane geometry, two circular arcs that together make up a full circle are called", options: ["coterminals arcs", "conjugate arcs", "congruent arcs", "half arcs"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_16", q: "16. Polygons are classified according to the number of _____.", options: ["vertices", "sides", "diagonals", "angles"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_17", q: "17. When two planes intersect with each other, the amount of divergence between the two planes is expressed by measuring the", options: ["dihedral angle", "plane angle", "polyhedral angle", "reflex angle"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_18", q: "18. An angular unit equivalent to 1/4000 of the circumference of a circle is called", options: ["mil", "degree", "radian", "grad"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_19", q: "19. Express 45° in mils.", options: ["80", "800", "1600", "2700"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_20", q: "20. The arc length equal to the radius of the circle is called", options: ["radian", "quarter sector", "sector", "semicircle"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_21", q: "21. A five-pointed star is known as", options: ["pentagon", "pentatron", "pentagram", "quintagram"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_22", q: "22. If two or more lines have a single point which lies on all of them, then they are", options: ["collinear", "coplanar", "concurrent", "conjugate"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_23", q: "23. The action of bringing one geometric figure into coincidence with another is called", options: ["transposition", "translation", "superposition", "projection"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_24", q: "24. A line that intersect two or more lines at distinct points", options: ["tangent line", "transversal", "bisector", "median"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_25", q: "25. An arc length equal to the radius of a circle.", options: ["grad", "radian", "degree", "mil"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_26", q: "26. An angle which is 1/400th of the full revolution.", options: ["gon", "mil", "degree", "radian"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_27", q: "27. Another term for gon", options: ["grad", "mil", "centesimal degree", "a and c"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_28", q: "28. An angle whose vertex is a point on the circle and whose sides are chords is known as", options: ["interior angle", "vertical angle", "acute angle", "inscribed angle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_29", q: "29. An angle greater than the right angle but less than a straight angle", options: ["acute angle", "obtuse angle", "reflex angle", "inscribed angle"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_30", q: "30. Any angle greater than a straight angle but less than two straight angles is known as _____ angle.", options: ["compliment", "supplement", "complex", "reflex"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_31", q: "31. The angle formed by the prolongation of one side and the adjacent side of the polygon.", options: ["interior angle", "acute angle", "exterior angle", "explementary angle"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_32", q: "32. Two angles which have the same vertex and the sides of one are form by extending of the other.", options: ["adjacent angles", "vertical angles", "alternate interior angles", "deflection angles"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_33", q: "33. Another term for exterior angle.", options: ["vertical angle", "inscribed angle", "reflex angle", "deflection angle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_34", q: "34. What is the sum of all deflection angles in given polygon?", options: ["always less than 360°", "always equal to 360°", "always greater than 360°", "always equal to 180°"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_35", q: "35. The coterminal angle of 120° is", options: ["240°", "- 240°", "480°", "-480°"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_36", q: "36. Two planes intersect each other. What is the term for the angle formed perpendicular to the intersection of two planes?", options: ["solid angle", "plane angle", "base angle", "dihedral angle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_37", q: "37. When a terminal side of an angle coincides with an axis, the angle is a", options: ["co-terminal angle", "right angle", "quadrantal angle", "reflex angle"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_38", q: "38. If the exterior angle of a polygon is obtuse, its corresponding interior angle is", options: ["an acute angle", "also an obtuse angle", "a reflex angle", "always greater than 360°"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_39", q: "39. The measure of 2.25 revolutions counterclockwise is", options: ["835°", "805°", "810°", "815°"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_40", q: "40. Solid angles are measured in", options: ["mil", "radians", "steradians", "circular mils"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_41", q: "41. What is the largest measure (in steradians) of a solid angle", options: ["2π", "4π", "8π", "π"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_42", q: "42. Steradians measure in space in analog of ____ measured in the plane.", options: ["radians", "degrees", "mils", "grads"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_43", q: "43. A part of a circle is called", options: ["sector", "segment", "chord", "arc"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_44", q: "44. It is a union of the chord of a circle and the intercepted arc.", options: ["sector", "segment", "lune", "zone"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_45", q: "45. A ____ of a circle in the figure bounded by two radii and the intercepted arc.", options: ["major arc", "minor arc", "segment", "sector"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_46", q: "46. The apothem of a polygon is the ____ of its inscribed circle.", options: ["radius", "circumference", "diameter", "length"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_47", q: "47. As the area of the circle increases, the ratio of its circumference to its diameter", options: ["increases", "remains constant", "decreases", "will be equal to 1"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_48", q: "48. A circle is said to be _____ to a polygon having the same perimeter with that of the circle.", options: ["congruent", "isoperimetric", "proportional", "convex"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_49", q: "49. Which of the following is NOT a property of a circle?", options: ["through 3 points not in a straight line, only 1 circle can be drawn", "a tangent to a circle is perpendicular to the radius at the point of tangency and conversely", "an inscribed angle is measured by one half of the intercepted arc", "the arcs of two circles subtended by equal central angles are always equal."], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_50", q: "50. All circles having the same center but of unequal radii are called", options: ["concentric circles", "eccentric circles", "inner circles", "pythagorean circles"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_51", q: "51. Two chords of a circle which joins a point on the circle to the end points of a diameter and forms a right angle.", options: ["complementary chords", "supplementary chords", "focal chords", "chords of contrast"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_52", q: "52. The center of the inscribed circle of a triangle is known as _____ of the triangle.", options: ["circumcenter", "incenter", "excenter", "orthocenter"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_53", q: "53. Supplementary chords are two chords which join a point on the circle to the endpoints of a diameter. The supplemental chords subtend a/an ______ angle.", options: ["acute", "right", "obtuse", "reflex"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_54", q: "54. A circle or radius R has a curvature of", options: ["R2", "1/R", "2R", "√R"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_55", q: "55. A polygon is _____ when no side, when extended, will pass through the interior of the polygon.", options: ["convex", "equilateral", "isoperimetric", "similar"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_56", q: "56. A polygon is said to be regular polygon if it is", options: ["convex", "all sides are congruent", "all angles are congruent", "all of the above"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_57", q: "57. Polygon is inscribed in the same circle called", options: ["concentric polygons", "ocentric polygons", "concyclic polygons", "orthocentric polygons"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_58", q: "58. If n is the number of sides of a polygon, then the sum of all interior angles of a polygon is expressed as", options: ["(n + 2) 180°", "(n/2) 180°", "(n – 2) 180°", "(n/2) (n – 3)"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_59", q: "59. If n is the number of sides of a polygon, then the number of diagonals of a polygon is expressed as", options: ["n!", "( n – 1)!", "(n/2) (n – 3)", "(n/3) (n – 2)"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_60", q: "60. What do you call a polygon with 11 sides?", options: ["unagon", "unogon", "undecagon", "dodecagon"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_61", q: "61. Pentagon is to 5 sides as ____ is to 11 sides.", options: ["heptagon", "septagon", "unidecagon", "hendecagon"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_62", q: "62. A polygon having 12 sides is called", options: ["bidecagon", "dodecagon", "nonagon", "pentadecagon"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_63", q: "63. A polygon of 100 sides is called", options: ["chilliagon", "ennagon", "perigon", "milliagon"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_64", q: "64. The highest point of a figure relative to a baseline or plane is called", options: ["summit", "vertex", "highest ordinate", "terminal point"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_65", q: "65. Indicate the false statement.", options: ["a trapezoid is a quadrilateral two and only two of whose sides are parallel", "the sum of two sides of a triangle is greater than the third side and their difference is less than the third side", "a diagonal of a polygon is a line joining any non-consecutive vertices", "two angles are complementary if their sum is 180°"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_66", q: "66. Which of the following statement is correct?", options: ["all right-angled triangles are similar", "all isosceles triangles are similar", "all equilateral triangles are similar", "all rectangles are similar"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_67", q: "67. A quadrilateral with no sides parallel.", options: ["trapezoid", "rhombus", "rhomboid", "trapezium"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_68", q: "68. Which of the following BEST describes Ptolemy’s theorem", options: ["it is use only for quadrilaterals", "it is just a modification of Brahmagupta’s theorem", "it is used for only cyclic quadrilaterals", "the sum of the square of the sides is equal to the square of the diagonals of a given quadrilateral"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_69", q: "69. The five-pointed star described by the diagonals of a regular pentagon", options: ["perigon", "pentegram", "penacle", "pentegram or penacle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_70", q: "70. The geometric figure remaining after a parallelogram has been removed from one corner of a larger similar polygon.", options: ["google", "gnomon", "gaussian plane", "lozenge"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_71", q: "71. An oblique-angled parallelogram with four sides equal is called", options: ["rhombus", "diamond", "lozenge", "all of the above"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_72", q: "72. A non-convex quadrilateral with two pairs of adjacent equal sides is called", options: ["trapezium", "kite", "deltroid", "diamond"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_73", q: "73. What is another term for a parallelogram?", options: ["rectangle", "quadrangle", "diamond", "rhomboid"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_74", q: "74. Prisms are classified according to their", options: ["bases", "prism", "truncated prism", "prismatoid"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_75", q: "75. A solid cut of a given solid by two non-parallel planes is called", options: ["frustum", "prism", "truncated prism", "prismatoid"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_76", q: "76. A polyhedron having bases two polygons in parallel planes and for lateral faces triangles or trapezoids with one side lying on the other base of the polyhedron", options: ["pyramid", "cone", "prismatoid", "truncated prism"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_77", q: "77. Portion of regular solid left after cutting off the upper part by a plane parallel to the base.", options: ["frustum", "ungula", "truncated solid", "prismatoid"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_78", q: "78. Body or space bounded by surface every point of which is equidistant from a point within", options: ["circle", "sphere", "spheroid", "ellipsoid"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_79", q: "79. A solid bounded by a zone and the planes of the zone’s base.", options: ["spherical sector", "spherical segment", "lune", "spherical excess"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_80", q: "80. The intersection of the sphere and the plane through the center is called", options: ["great circle", "small circle", "poles", "polar distance"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_81", q: "81. The portion of a sphere enclosed between two great semi-circles having common end points, including the semi-circle", options: ["spherical excess", "spherical segment", "zone", "lune"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_82", q: "82. A portion of the surface of the sphere included between two parallel planes", options: ["spherical excess", "spherical segment", "zone", "lune"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_83", q: "83. If R is the radius of the sphere and h is the distance between two parallel plane, the area of the zone is", options: ["2πRh", "4πRh", "πh2 (3R – h)/3", "4π (R – h)"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_84", q: "84. The solid bounded by two great circles and the surface of the sphere is known as", options: ["spherical zone", "spherical segment", "spherical cone", "spherical wedge"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_85", q: "85. A cone or cylinder with its top cut-off by a plane oblique to the base", options: ["frustum", "prismoid", "prismatoid", "ungula"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_86", q: "86. A term given to cylinder with elliptical cross-section", options: ["cylindroid", "cylindoid", "ovaloid", "deltroid"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_87", q: "87. A doughnut-like surface of revolution generated by rotating the circle through 360° in space but about a line in its plane but now passing through the circle.", options: ["torus", "annulus", "anchor", "all of the above"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_88", q: "88. A regular solid star in a shape that is radiating from center like rays of star", options: ["pentagram", "pentegon", "stellated solid", "archimedean solid"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_89", q: "89. Formed by intersection of rays from one point reflected or refracted from a curvature surface.", options: ["envelop", "caustic", "evolute", "pencil"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_90", q: "90. The regular polyhedron is a solid with all its faces identical regular polygons. The regular polyhedrons are also known as", options: ["Euclidean solids", "Pythagorean solids", "Platonic solids", "Newtonian solids"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_91", q: "91. There are how many regular polyhedra known to man?", options: ["5", "3", "7", "10"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_92", q: "92. An icosahedron is a regular polyhedron of ___ faces.", options: ["12", "14", "16", "20"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_93", q: "93. A regular polyhedron with 6 sides is called", options: ["dodecahedron", "hexahedron", "tetrahedron", "octahedron"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_94", q: "94. The face of a regular tetrahedron is a", options: ["square", "pentagon", "hexagon", "triangle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_95", q: "95. The face of a regular octahedron is a", options: ["square", "pentagon", "hexagon", "triangle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_96", q: "96. The face of a regular dodecahedron is a", options: ["square", "pentagon", "hexagon", "triangle"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_97", q: "97. The face of a regular icosahedron is a", options: ["square", "pentagon", "hexagon", "triangle"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_98", q: "98. Which regular polyhedron does not have a face a triangle?", options: ["tetrahedron", "octahedron", "icosahedron", "dodecahedron"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_99", q: "99. How many edges are there in a dodecahedron?", options: ["6", "12", "30", "8"], answer: 2 },
+    { category: "Plain and Solid Geometry", id: "geo_100", q: "100. A tetrahedron has ___ vertices.", options: ["4", "3", "6", "5"], answer: 0 },
+    { category: "Plain and Solid Geometry", id: "geo_101", q: "101. Given two solids and a plane. Supposed that every plane parallel to the given plane intersecting one of the two solids also intersects the other and gives cross-sections with the same area, then the two solids have the same volume. This is known as the", options: ["unit postulate", "plane postulate", "parallel postulate", "Cavalieri’s postulate"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_102", q: "102. Who formulated the Cavalieri’s Principle?", options: ["Harold Cavalieri", "Buenventura Cavalieri", "Joefry Cavalieri", "Carl Cabalieri"], answer: 1 },
+    { category: "Plain and Solid Geometry", id: "geo_103", q: "103. A line segment that is divided into two segments, a greater a and a smaller b such that the length of a + b is to a and a is to b. such division is known as", options: ["Golden segment", "golden ratio", "golden proportion", "all of the above"], answer: 3 },
+    { category: "Plain and Solid Geometry", id: "geo_104", q: "104. The volume of a paraboloid is equal to ___ the volume of circumscribing cylinder.", options: ["1/3", "½", "¼", "2/3"], answer: 1 }
+];
+
+let state = {
+    answers: {},
+    filteredQuestions: []
+};
+
+function resetQuiz() {
+    if (confirm("Are you sure you want to reset all your progress in Geometry?")) {
+        state.answers = {};
+        updateStats();
+        renderQuestions();
+    }
+}
+
+function updateStats() {
+    const totalAnswered = Object.keys(state.answers).length;
+    let totalCorrect = 0;
+
+    Object.keys(state.answers).forEach(id => {
+        const item = rawData.find(q => q.id === id);
+        if (item && state.answers[id] === item.answer) {
+            totalCorrect++;
+        }
+    });
+
+    document.getElementById('score-answered').innerText = totalAnswered;
+    document.getElementById('score-correct').innerText = totalCorrect;
+    const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+    document.getElementById('score-accuracy').innerText = `${accuracy}%`;
+    document.getElementById('total-count').innerText = rawData.length;
+}
+
+function handleOptionClick(questionId, optionIdx) {
+    if (state.answers[questionId] !== undefined) return;
+    
+    state.answers[questionId] = optionIdx;
+    updateStats();
+    
+    const qCard = document.getElementById(`card-${questionId}`);
+    if (qCard) {
+        const item = rawData.find(q => q.id === questionId);
+        qCard.outerHTML = renderQuestionCard(item);
+    }
+}
+
+function renderQuestionCard(item) {
+    const userAnswer = state.answers[item.id];
+    const isAnswered = userAnswer !== undefined;
+    const labels = ['A', 'B', 'C', 'D'];
+
+    const optionsHtml = item.options.map((opt, idx) => {
+        let btnClass = "option-btn";
+        if (isAnswered) {
+            if (idx === item.answer) {
+                btnClass += " correct";
+            } else if (idx === userAnswer) {
+                btnClass += " incorrect";
+            }
+        }
+
+        return `
+            <li>
+                <button 
+                    class="${btnClass}" 
+                    onclick="handleOptionClick('${item.id}', ${idx})"
+                    ${isAnswered ? 'disabled' : ''}>
+                    <strong>${labels[idx]}.</strong>&nbsp; ${opt}
+                </button>
+            </li>
+        `;
+    }).join('');
+
+    return `
+        <div class="question-card" id="card-${item.id}">
+            <span class="category-tag">${item.category}</span>
+            <h2 class="question-title">${item.q}</h2>
+            <ul class="options-list">
+                ${optionsHtml}
+            </ul>
+        </div>
+    `;
+}
+
+function filterQuestions() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    state.filteredQuestions = rawData.filter(item => {
+        return item.q.toLowerCase().includes(search) || 
+               item.options.some(opt => opt.toLowerCase().includes(search));
+    });
+    renderQuestions();
+}
+
+function renderQuestions() {
+    const container = document.getElementById('quiz-container');
+    if (state.filteredQuestions.length === 0) {
+        container.innerHTML = `<div class="no-results">No questions match your search.</div>`;
+        return;
+    }
+    container.innerHTML = state.filteredQuestions.map(renderQuestionCard).join('');
+}
+
+state.filteredQuestions = [...rawData];
+renderQuestions();
+updateStats();
+</script>
+</body>
+</html>
